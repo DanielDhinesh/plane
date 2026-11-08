@@ -1,165 +1,110 @@
-<br /><br />
-
 <p align="center">
-<a href="https://plane.so">
-  <img src="https://media.docs.plane.so/logo/plane_github_readme.png" alt="Plane Logo" width="400">
-</a>
-</p>
-<p align="center"><b>Modern project management for all teams</b></p>
-
-<p align="center">
-    <a href="https://plane.so/"><b>Website</b></a> •
-    <a href="https://forum.plane.so"><b>Forum</b></a> •
-    <a href="https://x.com/planepowers"><b>X</b></a> •
-    <a href="https://docs.plane.so/"><b>Documentation</b></a>
+  <img src="apps/web/public/icons/icon-192x192.png" width="96" alt="Stratify logo" />
 </p>
 
-<p>
-    <a href="https://app.plane.so/#gh-light-mode-only" target="_blank">
-      <img
-        src="https://media.docs.plane.so/GitHub-readme/github-top.webp"
-        alt="Plane Screens"
-        width="100%"
-      />
-    </a>
-</p>
+<h1 align="center">Stratify</h1>
+<p align="center"><b>Strategy to execution.</b><br/>The open-source business and project management platform — every feature free, no user limits, self-hosted with one Docker Compose file.</p>
 
-Meet [Plane](https://plane.so/), an open-source project management tool to track issues, run ~sprints~ cycles, and manage product roadmaps without the chaos of managing the tool itself. 🧘‍♀️
+---
 
-> Plane is evolving every day. Your suggestions, ideas, and reported bugs help us immensely. Do not hesitate to join in the conversation on [Forum](https://forum.plane.so) or raise a GitHub issue. We read everything and respond to most.
+Stratify is a fork of the [Plane](https://github.com/makeplane/plane) Community Edition (AGPL-3.0) that removes every paywall and adds the
+features teams usually buy Jira, Confluence and monday.com for.
 
-## 🚀 Installation
+## What's included
 
-Getting started with Plane is simple. Choose the setup that works best for you:
+| Area                                  | What you get                                                                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Work management**                   | Work items, sub-items, relations, cycles (sprints), modules, views, intake, estimates (points, categories **and time**), timeline, analytics, archives                                                                                                                                                                                                                                  |
+| **Teams**                             | Group people and projects into teams with leads; team dashboards (open / overdue / completed work); filter any sheet by team; team membership emails                                                                                                                                                                                                                                    |
+| **Jira-style workflows**              | Per-project transition matrix (from → to), role-restricted transitions (admin / member / guest), admin bypass, one-click presets; enforced on boards, lists, bulk edits and the public API                                                                                                                                                                                              |
+| **Knowledge base (Confluence-style)** | Spaces (workspace-wide or private), unlimited nested pages, rich-text editor with autosave, page locking, move pages, full version history with restore, full-text search                                                                                                                                                                                                               |
+| **Sheets**                            | A workspace-wide spreadsheet of every work item you can access, filterable by project, team, status, state, priority, labels, assignee, start/due/created/updated dates, overdue, free-text / ID search; grouping, sorting, column picker, saved filter presets, CSV export and bulk edit                                                                                               |
+| **Bulk operations**                   | Select many work items in lists/spreadsheets and set state, priority, dates, labels or assignees at once                                                                                                                                                                                                                                                                                |
+| **Industry templates**                | 14 ready-made project templates — Agile Scrum, Kanban, Bug Tracking, IT Service Desk, Marketing Campaign, Product Launch, Sales Pipeline (CRM), Recruiting, Employee Onboarding, Construction, Event Planning, Editorial Calendar, OKRs & Strategy, Month-end Close — each with states, labels, modules, workflow transitions and example items. Save any project as your own template. |
+| **Your own mail server**              | Per-workspace SMTP (host, port, STARTTLS/SSL, credentials stored encrypted, from / reply-to), provider presets, test email, and switches for work-item updates, invitations, team notices and a **daily digest** (overdue, due-soon and in-progress items for each member)                                                                                                              |
+| **Active cycles**                     | Every running cycle across projects with live progress                                                                                                                                                                                                                                                                                                                                  |
+| **No limits**                         | No plans, seats, upgrade prompts or feature gates. Telemetry is off by default in the self-host stack.                                                                                                                                                                                                                                                                                  |
 
-- **Plane Cloud**
-  Sign up for a free account on [Plane Cloud](https://app.plane.so)—it's the fastest way to get up and running without worrying about infrastructure.
+All new screens are responsive (phone → desktop) and follow the light/dark theme.
 
-- **Self-host Plane**
-  Prefer full control over your data and infrastructure? Install and run Plane on your own servers. Follow our detailed [deployment guides](https://developers.plane.so/self-hosting/overview) to get started.
+## Self-host in one command
 
-| Installation methods | Docs link                                                                                                                                                                               |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Docker               | [![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)](https://developers.plane.so/self-hosting/methods/docker-compose)         |
-| Kubernetes           | [![Kubernetes](https://img.shields.io/badge/kubernetes-%23326ce5.svg?style=for-the-badge&logo=kubernetes&logoColor=white)](https://developers.plane.so/self-hosting/methods/kubernetes) |
+Requirements: Docker 24+ with the Compose plugin, 4 GB RAM (8 GB recommended for the first build).
 
-`Instance admins` can configure instance settings with [God mode](https://developers.plane.so/self-hosting/govern/instance-admin).
+```bash
+git clone https://github.com/DanielDhinesh/plane.git stratify && cd stratify
+git checkout feat/stratify-open-platform
+./stratify.sh up          # creates .env.selfhost with random secrets on first run, builds and starts everything
+```
 
-## 🌟 Features
+Open `http://localhost` (or your domain). Create the instance admin at `/god-mode`, then your first workspace.
 
-- **Work Items**
-  Efficiently create and manage tasks with a robust rich text editor that supports file uploads. Enhance organization and tracking by adding sub-properties and referencing related issues.
+Prefer plain Docker Compose?
 
-- **Cycles**
-  Maintain your team’s momentum with Cycles. Track progress effortlessly using burn-down charts and other insightful tools.
+```bash
+cp .env.selfhost.example .env.selfhost   # edit secrets, domain and SMTP
+docker compose -f docker-compose.selfhost.yml --env-file .env.selfhost up -d --build
+```
 
-- **Modules**
-  Simplify complex projects by dividing them into smaller, manageable modules.
+`docker-compose.selfhost.yml` builds every service from this repository — web, admin, space, live, API, workers, scheduler, Caddy proxy (automatic HTTPS), PostgreSQL, Valkey, RabbitMQ and S3-compatible storage. Migrations run automatically before the API starts.
 
-- **Views**
-  Customize your workflow by creating filters to display only the most relevant issues. Save and share these views with ease.
+| Helper                                             | Does                                                           |
+| -------------------------------------------------- | -------------------------------------------------------------- |
+| `./stratify.sh setup`                              | Create `.env.selfhost` with random secrets (asks for your URL) |
+| `./stratify.sh up` / `down` / `restart` / `status` | Lifecycle                                                      |
+| `./stratify.sh logs api`                           | Follow logs                                                    |
+| `./stratify.sh update`                             | `git pull` + rebuild + restart                                 |
+| `./stratify.sh backup`                             | Dump the database to `./backups/`                              |
 
-- **Pages**
-  Capture and organize ideas using Plane Pages, complete with AI capabilities and a rich text editor. Format text, insert images, add hyperlinks, or convert your notes into actionable items.
+**HTTPS:** set `SITE_ADDRESS=pm.example.com`, `WEB_URL=https://pm.example.com` and `CERT_EMAIL=email you@example.com` in `.env.selfhost`; Caddy obtains certificates automatically.
 
-- **Analytics**
-  Access real-time insights across all your Plane data. Visualize trends, remove blockers, and keep your projects moving forward.
+**External S3:** set `USE_MINIO=0`, `AWS_S3_ENDPOINT_URL`, `AWS_REGION`, `STORAGE_ACCESS_KEY`, `STORAGE_SECRET_KEY` and `AWS_S3_BUCKET_NAME`.
 
-## 🛠️ Local development
+## Email
 
-See [CONTRIBUTING](./CONTRIBUTING.md)
+There are two layers:
 
-## ⚙️ Built with
+1. **Instance default** — `EMAIL_*` variables in `.env.selfhost`, or _God mode → Email_ at runtime. Used for sign-in codes, password resets and any workspace without its own server.
+2. **Per workspace** — _Workspace settings → Mail server_. Admins enter their SMTP server (presets for Google Workspace, Microsoft 365, Amazon SES, SendGrid, Mailgun, Zoho), send a test message and choose which emails go out: work-item updates, invitations, team changes and the daily digest (hour configurable, UTC).
 
-[![React Router](https://img.shields.io/badge/-React%20Router-CA4245?logo=react-router&style=for-the-badge&logoColor=white)](https://reactrouter.com/)
-[![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)](https://www.djangoproject.com/)
-[![Node JS](https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white)](https://nodejs.org/en)
+## Using the new features
 
-## 📸 Screenshots
+- **Teams** — sidebar → _Teams_ → _New team_. Pick a lead, members and projects. Open _Sheets_ from a team to see all of its work.
+- **Workflow** — _Project settings → Workflow_. Click cells in the matrix to allow moves, restrict roles per transition, then _Enforce workflow_.
+- **Knowledge base** — sidebar → _Knowledge base_ → _New space_. Use `+` in the page tree for sub-pages, _History_ to compare/restore versions, _Lock_ to freeze a page.
+- **Sheets** — sidebar → _Sheets_. Combine filters, group, choose columns, save presets, export CSV, select rows to bulk edit.
+- **Templates** — sidebar → _Templates_ → _Use template_. Or _Save a project as template_ to reuse your own setup.
 
-  <p>
-    <a href="https://plane.so" target="_blank">
-      <img
-        src="https://media.docs.plane.so/GitHub-readme/github-work-items.webp"
-        alt="Plane Views"
-        width="100%"
-      />
-    </a>
-  </p>
-  <p>
-    <a href="https://plane.so" target="_blank">
-      <img
-        src="https://media.docs.plane.so/GitHub-readme/github-cycles.webp"
-        width="100%"
-      />
-    </a>
-  </p>
-  <p>
-    <a href="https://plane.so" target="_blank">
-      <img
-        src="https://media.docs.plane.so/GitHub-readme/github-modules.webp"
-        alt="Plane Cycles and Modules"
-        width="100%"
-      />
-    </a>
-  </p>
-  <p>
-    <a href="https://plane.so" target="_blank">
-      <img
-        src="https://media.docs.plane.so/GitHub-readme/github-views.webp"
-        alt="Plane Analytics"
-        width="100%"
-      />
-    </a>
-  </p>
-   <p>
-    <a href="https://plane.so" target="_blank">
-      <img
-        src="https://media.docs.plane.so/GitHub-readme/github-analytics.webp"
-        alt="Plane Pages"
-        width="100%"
-      />
-    </a>
-  </p>
-</p>
+## Architecture
 
-## 📝 Documentation
+| Path                                    | What                                                                                                               |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `apps/web`                              | Main app (React Router v7 + MobX). New UI lives in `components/suite/*`, routes in `app/routes/extended.ts`        |
+| `apps/api`                              | Django REST API + Celery. New features are the `plane.suite` app (`apps/api/plane/suite`) mounted at `/api/suite/` |
+| `apps/admin`, `apps/space`, `apps/live` | Instance admin, public boards, realtime collaboration                                                              |
+| `packages/*`                            | Shared constants (branding in `packages/constants/src/brand.ts`), types, editor, i18n, UI blocks                   |
 
-Explore Plane's [product documentation](https://docs.plane.so/) and [developer documentation](https://developers.plane.so/) to learn about features, setup, and usage.
+### `plane.suite` API (all under `/api/suite/workspaces/<slug>/`)
 
-## ❤️ Community
+`teams/`, `teams/<id>/`, `teams/<id>/membership/` · `projects/<id>/workflow/`, `projects/<id>/workflow/allowed/` · `wiki/spaces/…`, `wiki/spaces/<id>/pages/…`, `…/versions/`, `wiki/search/` · `templates/`, `templates/create-project/`, `templates/custom/`, `projects/<id>/apply-template/` · `mail-settings/`, `mail-settings/test/` · `sheets/`, `sheets/meta/`, `work-items/bulk-update/` · `active-cycles/`
 
-Join the Plane community on [GitHub Discussions](https://github.com/orgs/makeplane/discussions) and our [Forum](https://forum.plane.so). We follow a [Code of conduct](https://github.com/makeplane/plane/blob/master/CODE_OF_CONDUCT.md) in all our community channels.
+## Development
 
-Feel free to ask questions, report bugs, participate in discussions, share ideas, request features, or showcase your projects. We’d love to hear from you!
+See [AGENTS.md](AGENTS.md) for the full command reference.
 
-## 🛡️ Security
+```bash
+pnpm install
+cp apps/api/.env.example apps/api/.env   # or ./setup.sh
+docker compose -f docker-compose-local.yml up -d   # API, worker, Postgres, Redis, RabbitMQ, storage
+pnpm dev                                           # web :3000, admin :3001, space :3002
+```
 
-If you discover a security vulnerability in Plane, please report it responsibly instead of opening a public issue. We take all legitimate reports seriously and will investigate them promptly. See [Security policy](https://github.com/makeplane/plane/blob/master/SECURITY.md) for more info.
+Checks: `pnpm check` (format, lint, types). Backend tests: `docker compose -f docker-compose-test.yml run --rm --build api-tests pytest plane/tests/contract/app/test_suite_app.py plane/tests/unit/suite`.
 
-To disclose any security issues, please email us at security@plane.so.
+## License and attribution
 
-## 🤝 Contributing
+Stratify is licensed under the **GNU Affero General Public License v3.0** (see [LICENSE.txt](LICENSE.txt)). It is based on the Plane
+Community Edition, © Plane Software, Inc. and contributors. If you run a modified version for users over a network, the AGPL
+requires you to offer them the corresponding source code.
 
-There are many ways you can contribute to Plane:
-
-- Report [bugs](https://github.com/makeplane/plane/issues/new?assignees=srinivaspendem%2Cpushya22&labels=%F0%9F%90%9Bbug&projects=&template=--bug-report.yaml&title=%5Bbug%5D%3A+) or submit [feature requests](https://github.com/makeplane/plane/issues/new?assignees=srinivaspendem%2Cpushya22&labels=%E2%9C%A8feature&projects=&template=--feature-request.yaml&title=%5Bfeature%5D%3A+).
-- Review the [documentation](https://docs.plane.so/) and submit [pull requests](https://github.com/makeplane/docs) to improve it—whether it's fixing typos or adding new content.
-- Talk or write about Plane or any other ecosystem integration and [let us know](https://forum.plane.so)!
-- Show your support by upvoting [popular feature requests](https://github.com/makeplane/plane/issues).
-
-Please read [CONTRIBUTING.md](https://github.com/makeplane/plane/blob/master/CONTRIBUTING.md) for details on the process for submitting pull requests to us.
-
-### Repo activity
-
-![Plane Repo Activity](https://repobeats.axiom.co/api/embed/2523c6ed2f77c082b7908c33e2ab208981d76c39.svg "Repobeats analytics image")
-
-### We couldn't have done this without you.
-
-<a href="https://github.com/makeplane/plane/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=makeplane/plane" />
-</a>
-
-## License
-
-This project is licensed under the [GNU Affero General Public License v3.0](https://github.com/makeplane/plane/blob/master/LICENSE.txt).
+“Stratify” is used here as a working product name; check trademark availability in your markets before launching publicly.
