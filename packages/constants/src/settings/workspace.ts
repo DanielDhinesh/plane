@@ -43,10 +43,17 @@ export const WORKSPACE_SETTINGS: Record<TWorkspaceSettingsTabs, TWorkspaceSettin
   },
   "billing-and-plans": {
     key: "billing-and-plans",
-    i18n_label: "workspace_settings.settings.billing_and_plans.title",
+    i18n_label: "suite.settings.open_source",
     href: `/settings/billing`,
     access: [EUserWorkspaceRoles.ADMIN],
     highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/settings/billing/`,
+  },
+  "mail-server": {
+    key: "mail-server",
+    i18n_label: "suite.settings.mail_server",
+    href: `/settings/mail-server`,
+    access: [EUserWorkspaceRoles.ADMIN],
+    highlight: (pathname: string, baseUrl: string) => pathname === `${baseUrl}/settings/mail-server/`,
   },
   export: {
     key: "export",
@@ -72,7 +79,7 @@ export const GROUPED_WORKSPACE_SETTINGS: Record<WORKSPACE_SETTINGS_CATEGORY, TWo
   [WORKSPACE_SETTINGS_CATEGORY.ADMINISTRATION]: [
     WORKSPACE_SETTINGS["general"],
     WORKSPACE_SETTINGS["members"],
-    WORKSPACE_SETTINGS["billing-and-plans"],
+    WORKSPACE_SETTINGS["mail-server"],
     WORKSPACE_SETTINGS["export"],
   ],
   [WORKSPACE_SETTINGS_CATEGORY.FEATURES]: [],

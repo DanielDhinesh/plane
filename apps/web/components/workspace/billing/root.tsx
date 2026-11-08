@@ -4,68 +4,52 @@
  * See the LICENSE file for details.
  */
 
-import { useState } from "react";
 import { observer } from "mobx-react";
 // plane imports
-import { DEFAULT_PRODUCT_BILLING_FREQUENCY, SUBSCRIPTION_WITH_BILLING_FREQUENCY } from "@plane/constants";
-import { useTranslation } from "@plane/i18n";
-import type { TBillingFrequency, TProductBillingFrequency } from "@plane/types";
-import { EProductSubscriptionEnum } from "@plane/types";
+import { BRAND_NAME } from "@plane/constants";
 // components
-import { SettingsBoxedControlItem } from "@/components/settings/boxed-control-item";
 import { SettingsHeading } from "@/components/settings/heading";
-// local imports
-import { PlansComparison } from "./comparison/root";
 
+const INCLUDED = [
+  { title: "Unlimited everything", body: "Unlimited members, guests, projects, work items, storage and history." },
+  { title: "Teams", body: "Group people and projects into teams and filter any view by team." },
+  { title: "Jira-style workflows", body: "Define allowed state transitions per project, restricted by role." },
+  { title: "Knowledge base", body: "Confluence-style spaces with nested pages, locking and version history." },
+  { title: "Sheets", body: "A workspace-wide spreadsheet of every work item with rich filters and CSV export." },
+  {
+    title: "Bulk operations",
+    body: "Select many work items and change state, priority, dates, labels or assignees at once.",
+  },
+  { title: "Industry templates", body: "Start projects from Scrum, ITSM, CRM, HR, construction, finance and more." },
+  { title: "Your own mail server", body: "Send updates, invitations and daily digests through your SMTP server." },
+  { title: "Time, point and category estimates", body: "Every estimate system is available on every project." },
+  { title: "Active cycles overview", body: "See every running cycle across projects with live progress." },
+];
+
+/** Replaces the upstream plans page: Stratify is free and open source, with nothing behind a paywall. */
 export const BillingRoot = observer(function BillingRoot() {
-  const [isCompareAllFeaturesSectionOpen, setIsCompareAllFeaturesSectionOpen] = useState(false);
-  const [productBillingFrequency, setProductBillingFrequency] = useState<TProductBillingFrequency>(
-    DEFAULT_PRODUCT_BILLING_FREQUENCY
-  );
-  const { t } = useTranslation();
-
-  /**
-   * Retrieves the billing frequency for a given subscription type
-   * @param {EProductSubscriptionEnum} subscriptionType - Type of subscription to get frequency for
-   * @returns {TBillingFrequency | undefined} - Billing frequency if subscription supports it, undefined otherwise
-   */
-  const getBillingFrequency = (subscriptionType: EProductSubscriptionEnum): TBillingFrequency | undefined =>
-    SUBSCRIPTION_WITH_BILLING_FREQUENCY.includes(subscriptionType)
-      ? productBillingFrequency[subscriptionType]
-      : undefined;
-
-  /**
-   * Updates the billing frequency for a specific subscription type
-   * @param {EProductSubscriptionEnum} subscriptionType - Type of subscription to update
-   * @param {TBillingFrequency} frequency - New billing frequency to set
-   * @returns {void}
-   */
-  const setBillingFrequency = (subscriptionType: EProductSubscriptionEnum, frequency: TBillingFrequency): void =>
-    setProductBillingFrequency({ ...productBillingFrequency, [subscriptionType]: frequency });
-
   return (
     <section className="relative scrollbar-hide size-full overflow-y-auto">
-      <div>
-        <SettingsHeading
-          title={t("workspace_settings.settings.billing_and_plans.heading")}
-          description={t("workspace_settings.settings.billing_and_plans.description")}
-        />
-        <div className="mt-6">
-          <SettingsBoxedControlItem
-            title="Community"
-            description="Unlimited projects, issues, cycles, modules, pages, and storage"
-          />
-        </div>
+      <SettingsHeading
+        title={`${BRAND_NAME} is open source`}
+        description="There are no plans, seats or limits. Every feature below is included for every workspace, forever."
+      />
+      <div className="mt-6 grid grid-cols-1 gap-3 md:grid-cols-2">
+        {INCLUDED.map((item) => (
+          <div key={item.title} className="rounded-lg border border-subtle bg-layer-1 p-4">
+            <div className="flex items-center gap-2">
+              <span className="grid size-5 place-items-center rounded-full bg-success-subtle text-caption-sm-semibold text-success-primary">
+                ✓
+              </span>
+              <h4 className="text-body-sm-semibold text-primary">{item.title}</h4>
+            </div>
+            <p className="mt-1.5 text-body-xs-regular text-secondary">{item.body}</p>
+          </div>
+        ))}
       </div>
-      <div className="mt-10 flex flex-col gap-y-3">
-        <h4 className="text-h6-semibold">All plans</h4>
-        <PlansComparison
-          isCompareAllFeaturesSectionOpen={isCompareAllFeaturesSectionOpen}
-          getBillingFrequency={getBillingFrequency}
-          setBillingFrequency={setBillingFrequency}
-          setIsCompareAllFeaturesSectionOpen={setIsCompareAllFeaturesSectionOpen}
-        />
-      </div>
+      <p className="mt-6 text-body-xs-regular text-tertiary">
+        {BRAND_NAME} is licensed under the GNU AGPL v3 and builds on the Plane Community Edition.
+      </p>
     </section>
   );
 });

@@ -4,32 +4,15 @@
  * See the LICENSE file for details.
  */
 
-// helpers
-import { useTranslation } from "@plane/i18n";
-import { cn } from "@plane/utils";
-
 type TUpgradeBadge = {
   className?: string;
   size?: "sm" | "md";
 };
 
-export function UpgradeBadge(props: TUpgradeBadge) {
-  const { className, size = "sm" } = props;
-
-  const { t } = useTranslation();
-
-  return (
-    <div
-      className={cn(
-        "w-fit cursor-pointer rounded-2xl bg-accent-primary/20 text-center font-medium text-accent-secondary outline-none",
-        {
-          "px-3 text-body-xs-regular": size === "md",
-          "px-2 text-caption-sm-regular": size === "sm",
-        },
-        className
-      )}
-    >
-      {t("sidebar.pro")}
-    </div>
-  );
+/**
+ * Stratify is fully open source: there are no paid plans, so feature "Pro" badges render nothing.
+ * The component is kept so existing call sites keep compiling.
+ */
+export function UpgradeBadge(_props: TUpgradeBadge) {
+  return null;
 }

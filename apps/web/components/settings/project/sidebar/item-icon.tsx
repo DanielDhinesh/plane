@@ -8,6 +8,7 @@ import type { IconGlyph } from "@makeplane/propel/components/icon";
 import {
   CyclesOutline,
   EstimateOutline,
+  HierarchyOutline,
   IntakeOutline,
   LabelsOutline,
   MembersOutline,
@@ -32,6 +33,7 @@ export const PROJECT_SETTINGS_ICONS: Record<TProjectSettingsTabs, IconGlyph | Re
   features_pages: PagesOutline,
   features_intake: IntakeOutline,
   states: StateOutline,
+  workflow: HierarchyOutline,
   labels: LabelsOutline,
   estimates: EstimateOutline,
   automations: TriggerOutline,

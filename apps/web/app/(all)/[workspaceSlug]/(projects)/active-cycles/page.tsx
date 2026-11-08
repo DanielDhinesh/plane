@@ -10,7 +10,7 @@ import { PageHead } from "@/components/core/page-title";
 // hooks
 import { useWorkspace } from "@/hooks/store/use-workspace";
 // local imports
-import { WorkspaceActiveCyclesUpgrade } from "@/components/active-cycles/workspace-active-cycles-upgrade";
+import { ActiveCyclesOverview } from "@/components/suite/cycles/active-cycles-overview";
 
 function WorkspaceActiveCyclesPage() {
   const { currentWorkspace } = useWorkspace();
@@ -20,7 +20,7 @@ function WorkspaceActiveCyclesPage() {
   return (
     <>
       <PageHead title={pageTitle} />
-      <WorkspaceActiveCyclesUpgrade />
+      <ActiveCyclesOverview />
     </>
   );
 }

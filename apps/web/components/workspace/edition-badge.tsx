@@ -4,43 +4,32 @@
  * See the LICENSE file for details.
  */
 
-import { useState } from "react";
 import { observer } from "mobx-react";
-// ui
-import { useTranslation } from "@plane/i18n";
+// plane imports
 import { Tooltip } from "@makeplane/propel/components/tooltip";
+import { BRAND_EDITIONS, BRAND_NAME } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 // hooks
 import { usePlatformOS } from "@/hooks/use-platform-os";
 import packageJson from "package.json";
-// local components
-import { Button } from "@makeplane/propel/components/button";
-import { PaidPlanUpgradeModal } from "@/components/license/modal/upgrade-modal";
 
+/** Edition chip: Stratify ships every feature for free, so this is informational only. */
 export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
-  // states
-  const [isPaidPlanPurchaseModalOpen, setIsPaidPlanPurchaseModalOpen] = useState(false);
-  // translation
   const { t } = useTranslation();
-  // platform
   const { isMobile } = usePlatformOS();
 
   return (
-    <>
-      <PaidPlanUpgradeModal
-        isOpen={isPaidPlanPurchaseModalOpen}
-        handleClose={() => setIsPaidPlanPurchaseModalOpen(false)}
-      />
-      <Tooltip label={`Version: v${packageJson.version}`} disabled={isMobile}>
-        <Button
-          variant="tertiary"
-          size="md"
-          stretch="auto"
-          label="Community"
-          onClick={() => setIsPaidPlanPurchaseModalOpen(true)}
-          aria-haspopup="dialog"
-          aria-label={t("aria_labels.projects_sidebar.edition_badge")}
-        />
-      </Tooltip>
-    </>
+    <Tooltip
+      label={`${BRAND_NAME} v${packageJson.version} — open source, every feature included, no user limits`}
+      disabled={isMobile}
+    >
+      <span
+        className="inline-flex h-7 items-center gap-1.5 rounded-md border border-subtle bg-layer-1 px-2.5 text-body-xs-medium text-secondary"
+        aria-label={t("aria_labels.projects_sidebar.edition_badge")}
+      >
+        <span className="size-1.5 rounded-full bg-success-primary" aria-hidden />
+        {BRAND_EDITIONS.FREE}
+      </span>
+    </Tooltip>
   );
 });
