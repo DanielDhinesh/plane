@@ -320,7 +320,7 @@
         },
         "app_created": {
           "title": "アプリが正常に作成されました",
-          "description": "認証情報を使用して、Plane ワークスペースにアプリをインストールしてください"
+          "description": "認証情報を使用して、Velora ワークスペースにアプリをインストールしてください"
         },
         "installed_apps": "インストール済みアプリ",
         "all_apps": "すべてのアプリ",
@@ -361,7 +361,7 @@
         },
         "redirect_uris": {
           "label": "リダイレクトURI（スペース区切り）",
-          "description": "ユーザーは Plane で認証した後、このパスにリダイレクトされます。",
+          "description": "ユーザーは Velora で認証した後、このパスにリダイレクトされます。",
           "placeholder": "https://example.com https://example.com/"
         },
         "app_available_description": "使用を開始するにはPlaneワークスペースに接続してください",
@@ -485,12 +485,12 @@
         }
       },
       "plane-intelligence": {
-        "title": "Plane AI",
-        "heading": "Plane AI",
+        "title": "Velora AI",
+        "heading": "Velora AI",
         "description": "作業やナレッジベースと直接連携するAIで、よりスマートかつ迅速に作業を進められます。"
       },
       "runners": {
-        "title": "Plane Runner",
+        "title": "Velora Runner",
         "heading": "スクリプト",
         "new_script": "新しいスクリプト",
         "description": "カスタムスクリプトと自動化ルールでワークフローを自動化します。"

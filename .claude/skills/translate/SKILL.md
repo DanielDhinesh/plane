@@ -32,6 +32,8 @@ Sources distilled from: Microsoft Localization Style Guides, Mozilla L10n, Unico
 
 Skip only for trivial English-only typo fixes that don't change meaning or length meaningfully.
 
+> **Rebrand note:** the product is now branded **Velora** (see `packages/constants/src/brand.ts`). Wherever this skill says "Plane" / "Plane AI" as a brand mark, read "Velora" / "Velora AI" — same do-not-translate rules, Latin in every locale. Code identifiers, keys and package names (`@plane/*`, `plane_pro`) are unchanged.
+
 ## The Two Iron Rules
 
 1. **Trademarks, brand marks, plan tier names, third-party product names, acronyms, and code tokens are never translated.** Plane's brand marks (Plane, Plane AI, Power K, PQL, Active Cycles, Sticky/Stickies, Intake), plan tiers (Pro, Business, Enterprise), third-party products (GitHub, Slack, Notion, etc.), and acronyms (API, OAuth, etc.) stay Latin in every locale.

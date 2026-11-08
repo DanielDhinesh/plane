@@ -7,6 +7,7 @@
 import { useState } from "react";
 import { observer } from "mobx-react";
 // ui
+import { BRAND_EDITIONS, BRAND_NAME } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Tooltip } from "@makeplane/propel/components/tooltip";
 // hooks
@@ -30,12 +31,12 @@ export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
         isOpen={isPaidPlanPurchaseModalOpen}
         handleClose={() => setIsPaidPlanPurchaseModalOpen(false)}
       />
-      <Tooltip label={`Version: v${packageJson.version}`} disabled={isMobile}>
+      <Tooltip label={`${BRAND_NAME} v${packageJson.version}`} disabled={isMobile}>
         <Button
           variant="tertiary"
           size="md"
           stretch="auto"
-          label="Community"
+          label={BRAND_EDITIONS.FREE}
           onClick={() => setIsPaidPlanPurchaseModalOpen(true)}
           aria-haspopup="dialog"
           aria-label={t("aria_labels.projects_sidebar.edition_badge")}

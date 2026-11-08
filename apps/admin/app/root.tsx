@@ -16,14 +16,18 @@ import globalStyles from "@/styles/globals.css?url";
 import { AppProviders } from "@/providers";
 import type { Route } from "./+types/root";
 // fonts
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font import
 import "@fontsource-variable/inter";
 import interVariableWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font import
 import "@fontsource/material-symbols-rounded";
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font import
 import "@fontsource/ibm-plex-mono";
+// brand
+import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_TAGLINE } from "@plane/constants";
 
-const APP_TITLE = "Plane | Simple, extensible, open-source project management tool.";
-const APP_DESCRIPTION =
-  "Open-source project management tool to manage work items, sprints, and product roadmaps with peace of mind.";
+const APP_TITLE = `${BRAND_NAME} Admin | ${BRAND_TAGLINE}`;
+const APP_DESCRIPTION = BRAND_DESCRIPTION;
 
 export const links: LinksFunction = () => [
   { rel: "apple-touch-icon", sizes: "180x180", href: appleTouchIcon },

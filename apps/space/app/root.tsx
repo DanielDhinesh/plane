@@ -19,13 +19,18 @@ import type { Route } from "./+types/root";
 import ErrorPage from "./error";
 import { AppProviders } from "./providers";
 // fonts
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font import
 import "@fontsource-variable/inter";
 import interVariableWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font import
 import "@fontsource/material-symbols-rounded";
+// oxlint-disable-next-line import/no-unassigned-import -- side-effect font import
 import "@fontsource/ibm-plex-mono";
+// brand
+import { BRAND_PUBLISH_DESCRIPTION, BRAND_PUBLISH_TITLE } from "@plane/constants";
 
-const APP_TITLE = "Plane Publish | Make your Plane boards public with one-click";
-const APP_DESCRIPTION = "Plane Publish is a customer feedback management tool built on top of plane.so";
+const APP_TITLE = BRAND_PUBLISH_TITLE;
+const APP_DESCRIPTION = BRAND_PUBLISH_DESCRIPTION;
 
 export const links: Route.LinksFunction = () => [
   { rel: "apple-touch-icon", sizes: "180x180", href: appleTouchIcon },
