@@ -42,6 +42,7 @@ from drf_spectacular.utils import (
 )
 
 # Module imports
+from plane.suite.services.workflow import check_transition
 from plane.api.serializers import (
     IssueAttachmentSerializer,
     IssueActivitySerializer,
@@ -845,6 +846,15 @@ class IssueDetailAPIEndpoint(BaseAPIView):
         """
         issue = Issue.objects.get(workspace__slug=slug, project_id=project_id, pk=pk)
         project = Project.objects.get(pk=project_id)
+        if request.data.get("state"):
+            transition = check_transition(
+                project=project, from_state_id=issue.state_id, to_state_id=request.data.get("state"), user=request.user
+            )
+            if not transition.allowed:
+                return Response(
+                    {"error": transition.reason, "code": "WORKFLOW_TRANSITION_NOT_ALLOWED"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
         current_instance = json.dumps(IssueSerializer(issue).data, cls=DjangoJSONEncoder)
         serializer = IssueSerializer(
             issue,

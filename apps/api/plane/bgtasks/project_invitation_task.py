@@ -11,11 +11,16 @@ from celery import shared_task
 # Django imports
 # Third party imports
 from django.core.mail import EmailMultiAlternatives, get_connection
+from django.conf import settings
 from django.template.loader import render_to_string
 
 # Module imports
 from plane.db.models import Project, ProjectMemberInvite, User
-from plane.license.utils.instance_value import get_email_configuration
+from plane.suite.services.mail import (
+    EVENT_INVITATIONS,
+    get_workspace_email_configuration,
+    is_event_enabled,
+)
 from plane.utils.email import generate_plain_text_from_html
 from plane.utils.exception_logger import log_exception
 
@@ -30,7 +35,7 @@ def project_invitation(email, project_id, token, current_site, invitor):
         relativelink = f"/project-invitations/?invitation_id={project_member_invite.id}&email={email}&slug={project.workspace.slug}&project_id={str(project_id)}"  # noqa: E501
         abs_url = current_site + relativelink
 
-        subject = f"{user.first_name or user.display_name or user.email} invited you to join {project.name} on Plane"
+        subject = f"{user.first_name or user.display_name or user.email} invited you to join {project.name} on {settings.BRAND_NAME}"  # noqa: E501
 
         context = {
             "email": email,
@@ -48,6 +53,9 @@ def project_invitation(email, project_id, token, current_site, invitor):
         project_member_invite.save()
 
         # Configure email connection from the database
+        if not is_event_enabled(project.workspace_id, EVENT_INVITATIONS):
+            return
+
         (
             EMAIL_HOST,
             EMAIL_HOST_USER,
@@ -56,7 +64,7 @@ def project_invitation(email, project_id, token, current_site, invitor):
             EMAIL_USE_TLS,
             EMAIL_USE_SSL,
             EMAIL_FROM,
-        ) = get_email_configuration()
+        ) = get_workspace_email_configuration(project.workspace_id)
 
         connection = get_connection(
             host=EMAIL_HOST,

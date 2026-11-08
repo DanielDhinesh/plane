@@ -18,7 +18,11 @@ from django.utils import timezone
 
 # Module imports
 from plane.db.models import EmailNotificationLog, Issue, User
-from plane.license.utils.instance_value import get_email_configuration
+from plane.suite.services.mail import (
+    EVENT_WORK_ITEM_UPDATES,
+    get_workspace_email_configuration,
+    is_event_enabled,
+)
 from plane.settings.redis import redis_instance
 from plane.utils.email import generate_plain_text_from_html
 from plane.utils.exception_logger import log_exception
@@ -169,6 +173,13 @@ def send_email_notification(issue_id, notification_data, receiver_id, email_noti
 
             data = create_payload(notification_data=notification_data)
 
+            workspace_id = Issue.objects.filter(pk=issue_id).values_list("workspace_id", flat=True).first()
+            if not is_event_enabled(workspace_id, EVENT_WORK_ITEM_UPDATES):
+                # Workspace opted out of work item update emails: mark as handled.
+                EmailNotificationLog.objects.filter(pk__in=email_notification_ids).update(sent_at=timezone.now())
+                release_lock(lock_id=lock_id)
+                return
+
             # Get email configurations
             (
                 EMAIL_HOST,
@@ -178,7 +189,7 @@ def send_email_notification(issue_id, notification_data, receiver_id, email_noti
                 EMAIL_USE_TLS,
                 EMAIL_USE_SSL,
                 EMAIL_FROM,
-            ) = get_email_configuration()
+            ) = get_workspace_email_configuration(workspace_id)
 
             receiver = User.objects.get(pk=receiver_id)
             issue = Issue.objects.get(pk=issue_id)

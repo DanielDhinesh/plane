@@ -50,6 +50,10 @@ class WorkspaceUserPreferenceViewSet(BaseAPIView):
                                     WorkspaceUserPreference.UserPreferenceKeys.DRAFTS,
                                     WorkspaceUserPreference.UserPreferenceKeys.YOUR_WORK,
                                     WorkspaceUserPreference.UserPreferenceKeys.STICKIES,
+                                    WorkspaceUserPreference.UserPreferenceKeys.TEAMS,
+                                    WorkspaceUserPreference.UserPreferenceKeys.WIKI,
+                                    WorkspaceUserPreference.UserPreferenceKeys.SHEETS,
+                                    WorkspaceUserPreference.UserPreferenceKeys.TEMPLATES,
                                 ]
                                 else False
                             ),

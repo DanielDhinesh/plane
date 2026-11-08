@@ -1,0 +1,21 @@
+{% extends "emails/suite/base.html" %}
+{% block title %}Daily digest{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 6px;font-size:20px;">Good morning, {{ first_name }}</h1>
+<p style="margin:0 0 20px;font-size:14px;color:#4b5563;">Here's what needs your attention in {{ workspace }} today.</p>
+{% if overdue %}
+<h2 style="margin:20px 0 8px;font-size:15px;color:#dc2626;">Overdue ({{ overdue|length }})</h2>
+{% include "emails/suite/_digest_rows.html" with rows=overdue %}
+{% endif %}
+{% if due_soon %}
+<h2 style="margin:20px 0 8px;font-size:15px;color:#d97706;">Due in the next 3 days ({{ due_soon|length }})</h2>
+{% include "emails/suite/_digest_rows.html" with rows=due_soon %}
+{% endif %}
+{% if in_progress %}
+<h2 style="margin:20px 0 8px;font-size:15px;color:#2563eb;">In progress ({{ in_progress|length }})</h2>
+{% include "emails/suite/_digest_rows.html" with rows=in_progress %}
+{% endif %}
+{% if base_url %}
+<p style="margin:24px 0 0;"><a href="{{ base_url }}/{{ slug }}/sheets" style="display:inline-block;background:#3f76ff;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;">Open my work</a></p>
+{% endif %}
+{% endblock %}

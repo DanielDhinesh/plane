@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %}{{ brand|default:"Stratify" }}{% endblock %}</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f4f6fb;font-family:Inter,Segoe UI,Helvetica,Arial,sans-serif;color:#1f2937;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6fb;padding:24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
+            <tr>
+              <td style="background:linear-gradient(135deg,#3f3cbb,#3f76ff);padding:20px 28px;">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="padding-right:10px;">
+                      <svg width="34" height="21" viewBox="0 0 85 52" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14 52L20 40H58L52 52H14Z" fill="#ffffff" opacity="0.5" />
+                        <path d="M24 34L30 22H68L62 34H24Z" fill="#ffffff" opacity="0.75" />
+                        <path d="M34 16L40 4H85L79 16H34Z" fill="#ffffff" />
+                      </svg>
+                    </td>
+                    <td style="color:#ffffff;font-size:20px;font-weight:800;letter-spacing:-0.5px;">{{ brand|default:"Stratify" }}</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px;">{% block content %}{% endblock %}</td>
+            </tr>
+            <tr>
+              <td style="padding:16px 28px;background:#f9fafb;color:#6b7280;font-size:12px;line-height:18px;">
+                Sent by {{ brand|default:"Stratify" }}{% if workspace %} for the <strong>{{ workspace }}</strong> workspace{% endif %}.
+                Workspace admins can change which emails are sent under Settings &rarr; Mail server.
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

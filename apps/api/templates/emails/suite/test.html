@@ -1,0 +1,6 @@
+{% extends "emails/suite/base.html" %}
+{% block title %}Mail server test{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 12px;font-size:20px;">Your mail server works 🎉</h1>
+<p style="margin:0;font-size:14px;line-height:22px;">This test message was sent through the SMTP server configured for the <strong>{{ workspace }}</strong> workspace. Work item updates, invitations, team notices and digests will be delivered the same way.</p>
+{% endblock %}

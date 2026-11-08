@@ -10,11 +10,16 @@ from celery import shared_task
 
 # Django imports
 from django.core.mail import EmailMultiAlternatives, get_connection
+from django.conf import settings
 from django.template.loader import render_to_string
 
 # Module imports
 from plane.db.models import User, Workspace, WorkspaceMemberInvite
-from plane.license.utils.instance_value import get_email_configuration
+from plane.suite.services.mail import (
+    EVENT_INVITATIONS,
+    get_workspace_email_configuration,
+    is_event_enabled,
+)
 from plane.utils.email import generate_plain_text_from_html
 from plane.utils.exception_logger import log_exception
 
@@ -35,6 +40,9 @@ def workspace_invitation(email, workspace_id, token, current_site, inviter):
         # The complete url including the domain
         abs_url = str(current_site) + relative_link
 
+        if not is_event_enabled(workspace.id, EVENT_INVITATIONS):
+            return
+
         (
             EMAIL_HOST,
             EMAIL_HOST_USER,
@@ -43,10 +51,10 @@ def workspace_invitation(email, workspace_id, token, current_site, inviter):
             EMAIL_USE_TLS,
             EMAIL_USE_SSL,
             EMAIL_FROM,
-        ) = get_email_configuration()
+        ) = get_workspace_email_configuration(workspace.id)
 
         # Subject of the email
-        subject = f"{user.first_name or user.display_name or user.email} has invited you to join them in {workspace.name} on Plane"  # noqa: E501
+        subject = f"{user.first_name or user.display_name or user.email} has invited you to join them in {workspace.name} on {settings.BRAND_NAME}"  # noqa: E501
 
         context = {
             "email": email,

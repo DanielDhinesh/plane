@@ -1,0 +1,9 @@
+{% extends "emails/suite/base.html" %}
+{% block title %}Added to {{ team }}{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 12px;font-size:20px;">Welcome to the {{ team }} team</h1>
+<p style="margin:0 0 16px;font-size:14px;line-height:22px;">Hi {{ first_name }}, {{ actor }} added you to the <strong>{{ team }}</strong> team in {{ workspace }}. You'll now see the team's projects, work items and knowledge base spaces.</p>
+{% if team_url %}
+<a href="{{ team_url }}" style="display:inline-block;background:#3f76ff;color:#ffffff;text-decoration:none;padding:10px 18px;border-radius:8px;font-size:14px;font-weight:600;">Open team</a>
+{% endif %}
+{% endblock %}

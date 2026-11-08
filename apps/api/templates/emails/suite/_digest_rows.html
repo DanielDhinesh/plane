@@ -1,0 +1,10 @@
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;font-size:13px;">
+  {% for row in rows %}
+  <tr style="border-bottom:1px solid #f1f5f9;">
+    <td style="padding:8px 6px;white-space:nowrap;color:#6b7280;">{% if base_url %}<a href="{{ base_url }}/{{ slug }}/projects/{{ row.project_id }}/issues/{{ row.id }}" style="color:#3f76ff;text-decoration:none;">{{ row.key }}</a>{% else %}{{ row.key }}{% endif %}</td>
+    <td style="padding:8px 6px;">{{ row.name }}</td>
+    <td style="padding:8px 6px;white-space:nowrap;"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:{{ row.color }};margin-right:6px;"></span>{{ row.state }}</td>
+    <td style="padding:8px 6px;white-space:nowrap;color:#6b7280;">{{ row.due }}</td>
+  </tr>
+  {% endfor %}
+</table>

@@ -10,11 +10,16 @@ from celery import shared_task
 
 # Third party imports
 from django.core.mail import EmailMultiAlternatives, get_connection
+from django.conf import settings
 from django.template.loader import render_to_string
 
 
 # Module imports
-from plane.license.utils.instance_value import get_email_configuration
+from plane.suite.services.mail import (
+    EVENT_INVITATIONS,
+    get_workspace_email_configuration,
+    is_event_enabled,
+)
 from plane.utils.email import generate_plain_text_from_html
 from plane.utils.exception_logger import log_exception
 from plane.db.models import ProjectMember
@@ -44,6 +49,9 @@ def project_add_user_email(current_site, project_member_id, invitor_id):
         }
 
         # Get the email configuration
+        if not is_event_enabled(project_member.workspace_id, EVENT_INVITATIONS):
+            return
+
         (
             EMAIL_HOST,
             EMAIL_HOST_USER,
@@ -52,10 +60,10 @@ def project_add_user_email(current_site, project_member_id, invitor_id):
             EMAIL_USE_TLS,
             EMAIL_USE_SSL,
             EMAIL_FROM,
-        ) = get_email_configuration()
+        ) = get_workspace_email_configuration(project_member.workspace_id)
 
         # Set the subject
-        subject = "You have been invited to a Plane project"
+        subject = f"You have been added to a {settings.BRAND_NAME} project"
 
         # Render the email template
         html_content = render_to_string("emails/notifications/project_addition.html", context)

@@ -57,6 +57,10 @@ app.conf.beat_schedule = {
         "task": "plane.license.bgtasks.telemetry_metrics.push_instance_metrics",
         "schedule": schedule(run_every=timedelta(minutes=METRICS_PUSH_INTERVAL_MINUTES)),
     },
+    "check-every-hour-to-send-daily-digests": {
+        "task": "plane.suite.tasks.send_daily_digests",
+        "schedule": crontab(minute=0),  # Every hour, per-workspace digest hour
+    },
     # Occurs once every day
     "check-every-day-to-delete-hard-delete": {
         "task": "plane.bgtasks.deletion_task.hard_delete",
