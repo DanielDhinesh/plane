@@ -269,6 +269,7 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
           message: "Invitations sent successfully.",
         });
         await nextStep();
+        return undefined;
       })
       .catch((err) => {
         setToast({
@@ -308,7 +309,7 @@ export const InviteTeamStep = observer(function InviteTeamStep(props: Props) {
     >
       <CommonOnboardingHeader
         title="Invite your teammates"
-        description="Work in plane happens best with your team. Invite them now to use Plane to its potential."
+        description="Work in Stratify happens best with your team. Invite them now to use Stratify to its potential."
       />
       <div className="flex w-full flex-col gap-6">
         <div className="flex flex-col gap-3">

@@ -6,4 +6,6 @@ export default defineConfig({
   dts: true,
   platform: "neutral",
   exports: true,
+  // Translations are loaded lazily via `./locales/<lang>/<ns>.json` (see src/load-locale.ts).
+  copy: [{ from: "src/locales", to: "dist/locales" }],
 });

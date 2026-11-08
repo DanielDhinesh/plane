@@ -7,18 +7,18 @@
 // ui
 import { Button } from "@makeplane/propel/components/button";
 
-function ErrorPage() {
-  const handleRetry = () => {
-    window.location.reload();
-  };
+const handleRetry = () => {
+  window.location.reload();
+};
 
+function ErrorPage() {
   return (
     <div className="grid h-screen place-items-center bg-surface-1 p-4">
       <div className="space-y-8 text-center">
         <div className="space-y-2">
           <h3 className="text-h6-semibold">Yikes! That doesn{"'"}t look good.</h3>
           <p className="mx-auto text-body-xs-regular text-secondary md:w-1/2">
-            That crashed Plane, pun intended. No worries, though. Our engineers have been notified. If you have more
+            That crashed Stratify, pun intended. No worries, though. Our engineers have been notified. If you have more
             details, please write to{" "}
             <a href="mailto:support@plane.so" className="text-accent-primary">
               support@plane.so
