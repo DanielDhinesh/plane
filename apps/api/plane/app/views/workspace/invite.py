@@ -27,6 +27,8 @@ from plane.app.serializers import (
 )
 from plane.app.views.base import BaseAPIView
 from plane.bgtasks.workspace_invitation_task import workspace_invitation
+from plane.billing.permissions import billing_error_response
+from plane.billing.services import BillingError, assert_seats_available, count_billable
 from plane.db.models import User, Workspace, WorkspaceMember, WorkspaceMemberInvite
 from plane.utils.cache import invalidate_cache, invalidate_cache_directly
 from plane.utils.host import base_host
@@ -83,6 +85,27 @@ class WorkspaceInvitationsViewset(BaseViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        # Enforce the plan's seat limit (guests are free). Already-pending invites for the
+        # same addresses are not double counted.
+        pending_emails = set(
+            WorkspaceMemberInvite.objects.filter(
+                workspace_id=workspace.id,
+                responded_at__isnull=True,
+                email__in=[str(email.get("email", "")).strip().lower() for email in emails],
+            ).values_list("email", flat=True)
+        )
+        try:
+            assert_seats_available(
+                workspace.id,
+                count_billable(
+                    email.get("role", 5)
+                    for email in emails
+                    if str(email.get("email", "")).strip().lower() not in pending_emails
+                ),
+            )
+        except BillingError as error:
+            return billing_error_response(error)
 
         workspace_invitations = []
         for email in emails:

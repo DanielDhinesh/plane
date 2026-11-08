@@ -22,6 +22,8 @@ from plane.app.serializers import (
     WorkSpaceMemberSerializer,
 )
 from plane.app.views.base import BaseAPIView
+from plane.billing.permissions import billing_error_response
+from plane.billing.services import GUEST_ROLE, BillingError, assert_seats_available
 from plane.db.models import Project, ProjectMember, WorkspaceMember, DraftIssue
 from plane.utils.cache import invalidate_cache
 
@@ -122,6 +124,13 @@ class WorkSpaceMemberViewSet(BaseViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        # Promoting a free guest to a billable role consumes a seat.
+        if workspace_member.role <= GUEST_ROLE < role:
+            try:
+                assert_seats_available(workspace_member.workspace_id, 1)
+            except BillingError as error:
+                return billing_error_response(error)
 
         with transaction.atomic():
             if is_guest:

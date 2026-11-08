@@ -112,6 +112,7 @@ INSTALLED_APPS = [
     "plane.license",
     "plane.api",
     "plane.authentication",
+    "plane.billing",
     # Third-party things
     "rest_framework",
     "corsheaders",
@@ -605,3 +606,22 @@ if ENABLE_DRF_SPECTACULAR:
     REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
     INSTALLED_APPS.append("drf_spectacular")
     from .openapi import SPECTACULAR_SETTINGS  # noqa: F401
+
+
+# --------------------------------------------------------------------------- #
+# Billing (plans, entitlements, Stripe)
+# --------------------------------------------------------------------------- #
+STRIPE_SECRET_KEY = os.environ.get("STRIPE_SECRET_KEY", "")
+STRIPE_WEBHOOK_SECRET = os.environ.get("STRIPE_WEBHOOK_SECRET", "")
+# Stripe price ids per plan and billing frequency, e.g. STRIPE_PRICE_PRO_MONTH=price_123
+STRIPE_PRICE_IDS = {
+    f"{plan}_{frequency}": os.environ.get(f"STRIPE_PRICE_{plan}_{frequency}", "")
+    for plan in ("PRO", "BUSINESS", "ENTERPRISE")
+    for frequency in ("MONTH", "YEAR")
+}
+BILLING_TRIAL_DAYS = int(os.environ.get("BILLING_TRIAL_DAYS", "14"))
+# Dev mode lets workspace admins switch plans without paying. Defaults to on only
+# when DEBUG is on and Stripe is not configured; never enable it in production.
+BILLING_DEV_MODE = os.environ.get(
+    "BILLING_DEV_MODE", "1" if (DEBUG and not STRIPE_SECRET_KEY) else "0"
+) == "1"
