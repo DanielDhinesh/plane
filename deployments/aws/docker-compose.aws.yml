@@ -1,0 +1,124 @@
+# Velora — production stack for a single AWS EC2 host (or an Auto Scaling group of them).
+#
+# Stateful services are AWS-managed and therefore NOT in this file:
+#   PostgreSQL  -> Amazon RDS
+#   Redis       -> Amazon ElastiCache (Valkey/Redis OSS)
+#   RabbitMQ    -> Amazon MQ (or the optional `rabbitmq` profile below)
+#   File store  -> Amazon S3 (accessed with the EC2 instance role — no static keys)
+#
+# Images are built once (scripts/build-and-push.sh) and pulled from Amazon ECR.
+# Usage (on the server, from deployments/aws):
+#   docker compose --env-file .env -f docker-compose.aws.yml pull
+#   docker compose --env-file .env -f docker-compose.aws.yml run --rm migrator
+#   docker compose --env-file .env -f docker-compose.aws.yml up -d
+# or simply: ./scripts/deploy.sh
+
+x-logging: &logging
+  driver: awslogs
+  options:
+    awslogs-region: ${AWS_REGION}
+    awslogs-group: ${LOG_GROUP:-/velora/production}
+    awslogs-create-group: "true"
+    tag: "{{.Name}}"
+
+x-api-base: &api-base
+  image: ${ECR_REGISTRY}/velora-api:${IMAGE_TAG}
+  env_file:
+    - ./env/api.env
+  restart: unless-stopped
+  logging: *logging
+
+services:
+  web:
+    image: ${ECR_REGISTRY}/velora-web:${IMAGE_TAG}
+    restart: unless-stopped
+    logging: *logging
+    depends_on: [api]
+
+  admin:
+    image: ${ECR_REGISTRY}/velora-admin:${IMAGE_TAG}
+    restart: unless-stopped
+    logging: *logging
+    depends_on: [api]
+
+  space:
+    image: ${ECR_REGISTRY}/velora-space:${IMAGE_TAG}
+    restart: unless-stopped
+    logging: *logging
+    depends_on: [api]
+
+  api:
+    <<: *api-base
+    command: ./bin/docker-entrypoint-api.sh
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:8000/api/instances/ >/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+  worker:
+    <<: *api-base
+    command: ./bin/docker-entrypoint-worker.sh
+    depends_on: [api]
+
+  beat-worker:
+    <<: *api-base
+    command: ./bin/docker-entrypoint-beat.sh
+    depends_on: [api]
+
+  # One-off: run before every release (`docker compose run --rm migrator`).
+  migrator:
+    <<: *api-base
+    restart: "no"
+    command: ./bin/docker-entrypoint-migrator.sh
+    profiles: ["migrate"]
+
+  live:
+    image: ${ECR_REGISTRY}/velora-live:${IMAGE_TAG}
+    env_file:
+      - ./env/live.env
+    restart: unless-stopped
+    logging: *logging
+    depends_on: [api]
+
+  proxy:
+    image: ${ECR_REGISTRY}/velora-proxy:${IMAGE_TAG}
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      - "${LISTEN_HTTP_PORT:-80}:80"
+      - "${LISTEN_HTTPS_PORT:-443}:443"
+    environment:
+      # Behind an ALB (recommended) keep SITE_ADDRESS=:80 — the ALB terminates TLS.
+      # Without an ALB set SITE_ADDRESS=app.example.com and CERT_EMAIL for automatic Let's Encrypt.
+      SITE_ADDRESS: ${SITE_ADDRESS:-:80}
+      CERT_EMAIL: ${CERT_EMAIL:-}
+      CERT_ACME_CA: ${CERT_ACME_CA:-https://acme-v02.api.letsencrypt.org/directory}
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-private_ranges}
+      FILE_SIZE_LIMIT: ${FILE_SIZE_LIMIT:-104857600}
+      BUCKET_NAME: ${AWS_S3_BUCKET_NAME}
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [web, api, space, admin, live]
+
+  # Optional self-hosted broker for small installs. Enable with: --profile rabbitmq
+  # and set AMQP_URL=amqp://velora:<password>@rabbitmq:5672/velora in env/api.env.
+  rabbitmq:
+    image: rabbitmq:3.13.6-management-alpine
+    restart: unless-stopped
+    profiles: ["rabbitmq"]
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-velora}
+      # Required when this profile is enabled (scripts/deploy.sh enforces it).
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST:-velora}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    logging: *logging
+
+volumes:
+  caddy_data:
+  caddy_config:
+  rabbitmq_data:
