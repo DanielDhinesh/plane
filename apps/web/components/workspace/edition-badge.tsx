@@ -16,6 +16,8 @@ import packageJson from "package.json";
 // local components
 import { Button } from "@makeplane/propel/components/button";
 import { PaidPlanUpgradeModal } from "@/components/license/modal/upgrade-modal";
+import { getPlanLabel } from "@/components/workspace/billing/use-plan-upgrade";
+import { useWorkspaceSubscription } from "@/hooks/store/use-workspace-billing";
 
 export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
   // states
@@ -24,6 +26,11 @@ export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
   const { t } = useTranslation();
   // platform
   const { isMobile } = usePlatformOS();
+  // billing
+  const { subscription } = useWorkspaceSubscription();
+  const plan = subscription?.effective_plan;
+  const isPaid = !!plan && plan !== "FREE";
+  const badgeLabel = isPaid ? getPlanLabel(plan) : BRAND_EDITIONS.FREE;
 
   return (
     <>
@@ -36,8 +43,10 @@ export const WorkspaceEditionBadge = observer(function WorkspaceEditionBadge() {
           variant="tertiary"
           size="md"
           stretch="auto"
-          label={BRAND_EDITIONS.FREE}
-          onClick={() => setIsPaidPlanPurchaseModalOpen(true)}
+          label={badgeLabel}
+          onClick={() => {
+            if (!isPaid) setIsPaidPlanPurchaseModalOpen(true);
+          }}
           aria-haspopup="dialog"
           aria-label={t("aria_labels.projects_sidebar.edition_badge")}
         />

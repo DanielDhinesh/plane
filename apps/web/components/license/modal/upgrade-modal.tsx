@@ -11,9 +11,6 @@ import {
   ENTERPRISE_PLAN_FEATURES,
   PLANE_COMMUNITY_PRODUCTS,
   PRO_PLAN_FEATURES,
-  SUBSCRIPTION_REDIRECTION_URLS,
-  SUBSCRIPTION_WEBPAGE_URLS,
-  TALK_TO_SALES_URL,
 } from "@plane/constants";
 import { EProductSubscriptionEnum } from "@plane/types";
 import { Dialog, DialogBody, DialogContent, DialogMain } from "@makeplane/propel/components/dialog";
@@ -21,6 +18,7 @@ import { cn } from "@plane/utils";
 // components
 import { FreePlanCard, PlanUpgradeCard } from "@/components/license";
 import type { TCheckoutParams } from "@/components/license/modal/card/checkout-button";
+import { toBillingPlan, usePlanUpgrade } from "@/components/workspace/billing/use-plan-upgrade";
 
 // Constants
 const COMMON_CARD_CLASSNAME = "flex flex-col w-full h-full justify-end col-span-12 sm:col-span-6 xl:col-span-3";
@@ -37,15 +35,13 @@ export const PaidPlanUpgradeModal = observer(function PaidPlanUpgradeModal(props
   const isSelfHosted = true;
   const isTrialAllowed = false;
 
+  const { upgrade, workspaceSlug } = usePlanUpgrade();
+  const plansPageHref = workspaceSlug ? `/${workspaceSlug}/settings/billing` : "#";
+
   const handleRedirection = ({ planVariant, priceId }: TCheckoutParams) => {
-    // Get the product and price using plane community constants
     const product = PLANE_COMMUNITY_PRODUCTS[planVariant];
-    // oxlint-disable-next-line no-shadow
-    const price = product.prices.find((price) => price.id === priceId);
-    const frequency = price?.recurring ?? "year";
-    // Redirect to the appropriate URL
-    const redirectUrl = SUBSCRIPTION_REDIRECTION_URLS[planVariant][frequency] ?? TALK_TO_SALES_URL;
-    window.open(redirectUrl, "_blank");
+    const price = product?.prices.find((productPrice) => productPrice.id === priceId);
+    void upgrade(toBillingPlan(planVariant), price?.recurring ?? "year").then(handleClose);
   };
 
   return (
@@ -85,13 +81,7 @@ export const PaidPlanUpgradeModal = observer(function PaidPlanUpgradeModal(props
                   verticalFeatureList
                   extraFeatures={
                     <p className={COMMON_EXTRA_FEATURES_CLASSNAME}>
-                      <a
-                        href={SUBSCRIPTION_WEBPAGE_URLS[EProductSubscriptionEnum.PRO]}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        See full features list
-                      </a>
+                      <a href={plansPageHref}>See full features list</a>
                     </p>
                   }
                   handleCheckout={handleRedirection}
@@ -107,13 +97,7 @@ export const PaidPlanUpgradeModal = observer(function PaidPlanUpgradeModal(props
                   verticalFeatureList
                   extraFeatures={
                     <p className={COMMON_EXTRA_FEATURES_CLASSNAME}>
-                      <a
-                        href={SUBSCRIPTION_WEBPAGE_URLS[EProductSubscriptionEnum.BUSINESS]}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        See full features list
-                      </a>
+                      <a href={plansPageHref}>See full features list</a>
                     </p>
                   }
                   handleCheckout={handleRedirection}
@@ -129,13 +113,7 @@ export const PaidPlanUpgradeModal = observer(function PaidPlanUpgradeModal(props
                   verticalFeatureList
                   extraFeatures={
                     <p className={COMMON_EXTRA_FEATURES_CLASSNAME}>
-                      <a
-                        href={SUBSCRIPTION_WEBPAGE_URLS[EProductSubscriptionEnum.ENTERPRISE]}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        See full features list
-                      </a>
+                      <a href={plansPageHref}>See full features list</a>
                     </p>
                   }
                   handleCheckout={handleRedirection}

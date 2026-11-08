@@ -18,6 +18,12 @@ export const BRAND_PUBLISH_NAME = `${BRAND_NAME} Publish`;
 export const BRAND_PUBLISH_TITLE = `${BRAND_PUBLISH_NAME} | Share your boards and roadmaps with one click`;
 export const BRAND_PUBLISH_DESCRIPTION = `${BRAND_PUBLISH_NAME} lets you share boards, roadmaps and feedback portals publicly.`;
 
+/**
+ * Sales contact used by "Talk to sales" buttons.
+ * TODO(launch): replace the reserved `.example` placeholder with the real sales address.
+ */
+export const BRAND_SALES_EMAIL = "sales@velora.example";
+
 /** Plan / edition labels shown in the UI */
 export const BRAND_EDITIONS = {
   FREE: "Free",

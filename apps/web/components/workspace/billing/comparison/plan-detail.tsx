@@ -6,11 +6,7 @@
 
 import { observer } from "mobx-react";
 // plane imports
-import {
-  SUBSCRIPTION_REDIRECTION_URLS,
-  SUBSCRIPTION_WITH_BILLING_FREQUENCY,
-  TALK_TO_SALES_URL,
-} from "@plane/constants";
+import { SUBSCRIPTION_WITH_BILLING_FREQUENCY, TALK_TO_SALES_URL } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
 import { Button } from "@makeplane/propel/components/button";
 import type { TBillingFrequency } from "@plane/types";
@@ -21,6 +17,7 @@ import { DiscountInfo } from "@/components/license/modal/card/discount-info";
 import type { TPlanDetail } from "@/components/workspace/billing/comparison/plans";
 // local imports
 import { PlanFrequencyToggle } from "./frequency-toggle";
+import { toBillingPlan, usePlanUpgrade } from "../use-plan-upgrade";
 
 type TPlanDetailProps = {
   subscriptionType: EProductSubscriptionEnum;
@@ -44,13 +41,13 @@ export const PlanDetail = observer(function PlanDetail(props: TPlanDetailProps) 
       ? planDetail.monthlyPriceSecondaryDescription
       : planDetail.yearlyPriceSecondaryDescription;
 
-  const handleRedirection = () => {
-    const frequency = billingFrequency ?? "year";
-    // Get the redirection URL based on the subscription type and billing frequency
-    const redirectUrl = SUBSCRIPTION_REDIRECTION_URLS[subscriptionType][frequency] ?? TALK_TO_SALES_URL;
-    // Open the URL in a new tab
-    window.open(redirectUrl, "_blank");
-  };
+  // billing
+  const { upgrade, pendingPlan, subscription } = usePlanUpgrade();
+  const billingPlan = toBillingPlan(subscriptionType);
+  const isCurrentPlan = subscription?.effective_plan === billingPlan;
+  const canSelfServe = isSubscriptionActive || !!subscription?.dev_mode;
+
+  const handleUpgrade = () => void upgrade(billingPlan, billingFrequency ?? "year");
 
   return (
     <div className="col-span-1 flex flex-col justify-between space-y-0.5 p-3">
@@ -104,8 +101,16 @@ export const PlanDetail = observer(function PlanDetail(props: TPlanDetailProps) 
           variant="primary"
           size="md"
           stretch="full"
-          label={isSubscriptionActive ? `Upgrade to ${subscriptionName}` : t("common.upgrade_cta.talk_to_sales")}
-          onClick={handleRedirection}
+          label={
+            isCurrentPlan
+              ? "Current plan"
+              : canSelfServe
+                ? `Upgrade to ${subscriptionName}`
+                : t("common.upgrade_cta.talk_to_sales")
+          }
+          disabled={isCurrentPlan}
+          loading={pendingPlan === billingPlan}
+          onClick={canSelfServe ? handleUpgrade : () => window.open(TALK_TO_SALES_URL, "_blank", "noopener,noreferrer")}
         />
       </div>
     </div>
